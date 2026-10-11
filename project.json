@@ -1,0 +1,29 @@
+{
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "name": "element-cli",
+    "projectType": "application",
+    "root": "apps/cli",
+    "targets": {
+        "build": {
+            "cache": true,
+            "inputs": ["src", "{projectRoot}/tsconfig.json"],
+            "outputs": ["{projectRoot}/lib"],
+            "command": "tsc",
+            "options": {
+                "cwd": "apps/cli"
+            }
+        },
+        "lint:types": {
+            "command": "tsc --noEmit",
+            "options": {
+                "cwd": "apps/cli"
+            }
+        },
+        "test:unit": {
+            "command": "vitest run",
+            "options": {
+                "cwd": "apps/cli"
+            }
+        }
+    }
+}

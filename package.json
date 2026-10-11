@@ -1,0 +1,36 @@
+{
+    "name": "@element-hq/element-cli",
+    "version": "1.0.0",
+    "description": "CLI and Terminal User Interface (TUI) client for Matrix and Element",
+    "author": "Element",
+    "license": "SEE LICENSE IN README.md",
+    "type": "module",
+    "bin": {
+        "element-cli": "./bin/element-cli.js"
+    },
+    "main": "./lib/index.js",
+    "types": "./lib/index.d.ts",
+    "files": [
+        "bin",
+        "lib",
+        "README.md",
+        "package.json"
+    ],
+    "engines": {
+        "node": ">=22.0.0"
+    },
+    "scripts": {
+        "build": "tsc",
+        "start": "node bin/element-cli.js",
+        "test:unit": "vitest run",
+        "lint": "oxlint",
+        "lint:types": "tsc --noEmit",
+        "pack": "pnpm build && pnpm pack",
+        "dist": "./scripts/package.sh"
+    },
+    "devDependencies": {
+        "@types/node": "catalog:ts6",
+        "typescript": "catalog:ts6",
+        "vitest": "catalog:"
+    }
+}

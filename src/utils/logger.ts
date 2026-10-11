@@ -1,0 +1,64 @@
+/*
+Copyright 2026 Element Creations Ltd.
+
+SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial
+Please see LICENSE in the repository root for full details.
+*/
+
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as os from "node:os";
+
+/**
+ * File logger for Element CLI debugging without interfering with TUI screen.
+ */
+export class Logger {
+    private static logFile: string | null = null;
+    private static isDebug = false;
+
+    public static init(debug = false): void {
+        this.isDebug = debug;
+        try {
+            const dir = path.join(os.homedir(), ".config", "element-cli");
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true, mode: 0o700 });
+            }
+            this.logFile = path.join(dir, "debug.log");
+        } catch {
+            this.logFile = null;
+        }
+    }
+
+    public static debug(message: string, ...args: unknown[]): void {
+        if (!this.isDebug) {
+            return;
+        }
+        this.write("DEBUG", message, args);
+    }
+
+    public static info(message: string, ...args: unknown[]): void {
+        this.write("INFO", message, args);
+    }
+
+    public static warn(message: string, ...args: unknown[]): void {
+        this.write("WARN", message, args);
+    }
+
+    public static error(message: string, ...args: unknown[]): void {
+        this.write("ERROR", message, args);
+    }
+
+    private static write(level: string, message: string, args: unknown[]): void {
+        if (!this.logFile) {
+            return;
+        }
+        const time = new Date().toISOString();
+        const formattedArgs = args.length > 0 ? " " + JSON.stringify(args) : "";
+        const line = `[${time}] [${level}] ${message}${formattedArgs}\n`;
+        try {
+            fs.appendFileSync(this.logFile, line);
+        } catch {
+            // Ignore write errors to avoid crashing CLI
+        }
+    }
+}
